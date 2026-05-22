@@ -1,7 +1,7 @@
 export const config = /*json-start*/{
   "mainAssemblyName": "TirePressureCalculator.Browser.dll",
   "resources": {
-    "hash": "sha256-btMu+gwj6lnrJAU+A5lRIAH6olnW8KVwr2CZhmUdMPI=",
+    "hash": "sha256-5p96aFuSczr/I1svAhUhSt4nhejjTqSzv6h80J3ZQfk=",
     "jsModuleNative": [
       {
         "name": "dotnet.native.js"
@@ -15,14 +15,14 @@ export const config = /*json-start*/{
     "wasmNative": [
       {
         "name": "dotnet.native.wasm",
-        "hash": "sha256-0wwaEyV36Tm2ax7JApvNLjLz0bW//xnHbOR1QpmyCM8="
+        "hash": "sha256-/1ECTAv5nxTJQDcApvgfkv3WZs0jmsTuIzsloiZsd6E="
       }
     ],
     "coreAssembly": [
       {
         "virtualPath": "System.Private.CoreLib.wasm",
         "name": "System.Private.CoreLib.wasm",
-        "hash": "sha256-pGwIVWp1TuUyfhcQALxxki7OWQ02fSgklkVuw24Yjm8="
+        "hash": "sha256-ah94ki3wdMJml3DYWpWTS+7ISXawwOYY+xJ1RetUfPo="
       },
       {
         "virtualPath": "System.Runtime.InteropServices.JavaScript.wasm",
@@ -34,7 +34,7 @@ export const config = /*json-start*/{
       {
         "virtualPath": "Avalonia.Base.wasm",
         "name": "Avalonia.Base.wasm",
-        "hash": "sha256-1CdEfm9Lv1vyULXB23jK14FWXzBQLCnwDH8VBUoZomc="
+        "hash": "sha256-RXkFjmowH+D5BhvmT8YrzCoq0VDoNsUQp5WICjPI390="
       },
       {
         "virtualPath": "Avalonia.Browser.wasm",
@@ -44,7 +44,7 @@ export const config = /*json-start*/{
       {
         "virtualPath": "Avalonia.Controls.wasm",
         "name": "Avalonia.Controls.wasm",
-        "hash": "sha256-h2qzLq1yOi5bx3CjpJjXbGf7oxhbZRKpxUG4wug35ZI="
+        "hash": "sha256-0PsTRVhoYJBv8T1La4WL1jLXENQdHlZq9QMS5Nn4F8k="
       },
       {
         "virtualPath": "Avalonia.Dialogs.wasm",
@@ -104,7 +104,7 @@ export const config = /*json-start*/{
       {
         "virtualPath": "System.Collections.wasm",
         "name": "System.Collections.wasm",
-        "hash": "sha256-RLupKa2pIkGSxXhVKfUwzl92GXs8eY/uqTc3cY4B4Hk="
+        "hash": "sha256-FRBd9raYIfYF8mSupghSKGI6dmBF12pjPG1y1l1j7Ac="
       },
       {
         "virtualPath": "System.Collections.NonGeneric.wasm",
@@ -114,7 +114,7 @@ export const config = /*json-start*/{
       {
         "virtualPath": "System.Collections.Specialized.wasm",
         "name": "System.Collections.Specialized.wasm",
-        "hash": "sha256-vU1/UStR2eWSyvbcvTCydLfG3FXpkMT2LCTtoOhde70="
+        "hash": "sha256-Slzyhemlc7XdB3b2m6tckYFS/I0BZWVMYld+bSJ1TNA="
       },
       {
         "virtualPath": "System.ComponentModel.Annotations.wasm",
@@ -184,22 +184,22 @@ export const config = /*json-start*/{
       {
         "virtualPath": "System.Text.Json.wasm",
         "name": "System.Text.Json.wasm",
-        "hash": "sha256-TS8Lb2HqlO4eMnQravhBRD2qMTs8LdfpbDkF/SD7aSI="
+        "hash": "sha256-xj0mn49zrpavGfMxyl90YES+QqdCwYBNF+MX7kUNSp8="
       },
       {
         "virtualPath": "System.Text.RegularExpressions.wasm",
         "name": "System.Text.RegularExpressions.wasm",
-        "hash": "sha256-P3r7WJhAs63H4JukUVEpxLR2KxCZd4S3OdqCLO6sUtg="
+        "hash": "sha256-NKtlnZNxd4WpDd1c9OjsawiLImuWiOGi08SGX+1ZpZk="
       },
       {
         "virtualPath": "TirePressureCalculator.Browser.wasm",
         "name": "TirePressureCalculator.Browser.wasm",
-        "hash": "sha256-szCosedE4XR4EJbUKoUyqGadafyXVGDbwjXJVOuOhVw="
+        "hash": "sha256-JaEPyHpOlwo3esHkCrQ7r9IZre6L12ac7eQnzHvCYzk="
       },
       {
         "virtualPath": "TirePressureCalculator.Core.wasm",
         "name": "TirePressureCalculator.Core.wasm",
-        "hash": "sha256-e7xHc2mBRt5k7GI0PWOrvYOYffS9m5AVM8Z3YSrxzdo="
+        "hash": "sha256-kO4BqLdHN5KELDHWDwYIedW76gL2qTA2TLf/jvYBjVU="
       }
     ]
   },
