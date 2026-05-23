@@ -1,7 +1,7 @@
 export const config = /*json-start*/{
   "mainAssemblyName": "TirePressureCalculator.Browser.dll",
   "resources": {
-    "hash": "sha256-iXSX5U5wmzjamM+01fzTWrwKnvhDduzzEUj1THw/iME=",
+    "hash": "sha256-KxvLkMY4noUmMm4Kt9ehjqV5t7E0dGLRg81JAGzNJts=",
     "jsModuleNative": [
       {
         "name": "dotnet.native.js"
@@ -194,12 +194,12 @@ export const config = /*json-start*/{
       {
         "virtualPath": "TirePressureCalculator.Browser.wasm",
         "name": "TirePressureCalculator.Browser.wasm",
-        "hash": "sha256-W5sttQ0FwntkHhdUSaodA0Xhz02OKVaYTqNiJFww0L0="
+        "hash": "sha256-HNJGMnZc8ohTHdWeNmBnHjrP+DWEOf1ZwCA1YJJkehg="
       },
       {
         "virtualPath": "TirePressureCalculator.Core.wasm",
         "name": "TirePressureCalculator.Core.wasm",
-        "hash": "sha256-6pmxRIptsQWVndC8PXSh1+k7sq0NlCDkXlJrvALbb6E="
+        "hash": "sha256-gYDtBtHwUmE3KoooZxP7Bj7RlXFW1botc8a/Mowkj4Y="
       }
     ]
   },
