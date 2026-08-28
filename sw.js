@@ -3,10 +3,10 @@
 // artifact is network-first so a fresh deploy is picked up when online,
 // falling back to the last-synced copy trackside with no signal.
 //
-// 62b5144b0595 is stamped with the git SHA by the deploy workflow
+// 8732d4c8d739 is stamped with the git SHA by the deploy workflow
 // (.github/workflows/build-tire-pressure-web.yml); locally it stays as-is,
 // which simply means one long-lived dev cache.
-const CACHE = 'tire-pressure-calculator-62b5144b0595';
+const CACHE = 'tire-pressure-calculator-8732d4c8d739';
 
 const SHELL = [
   './',
