@@ -14,7 +14,7 @@ const STORAGE_KEY = 'tire-pressure-calculator/settings';
 // Stamped by the deploy workflow (.github/workflows/build-tire-pressure-web.yml)
 // from pyproject.toml; the repo copy keeps the placeholder, which renders
 // as "dev" locally.
-const APP_VERSION = '1.1.1';
+const APP_VERSION = '1.2.0';
 
 const MODE_MANUAL = 0;
 const MODE_PREDICTION = 1;
