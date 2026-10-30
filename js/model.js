@@ -340,6 +340,16 @@ export class TireModel {
     return null;
   }
 
+  // Team hot-pressure target for (car, compound) from
+  // hot_pressure_targets.yaml (bar gauge), or null when the artifact has
+  // none for that pair (caller falls back to the measured median).
+  lookupTargetHotPressure(car, compound) {
+    if (!compound) return null;
+    const rows = this.dto.target_hot_pressure_by_car_compound ?? [];
+    const hit = rows.find((r) => r.car === car && r.compound === compound);
+    return hit ? { targetHotPressureBar: hit.target_hot_pressure_bar } : null;
+  }
+
   // ---- Target-lap-time pace scaling (schema v3) ----
 
   lookupG2PaceCurve(track, car, condition) {
@@ -352,21 +362,25 @@ export class TireModel {
     return null;
   }
 
-  // Multiplier on g2_typ for a target lap time; mirrors the Python
-  // predictor's _g2_pace_scale. Preferred: ratio along the bucket's
-  // sector-fit curve (anchored at lap_time_typ so target === typical
-  // scales by exactly 1). Fallback: the pooled sector exponent.
-  // Clamped either way.
-  g2PaceScale(track, car, condition, lapTimeTypS, targetLapTimeS) {
+  // Multiplier on the typical heat input for a target lap time; mirrors
+  // the Python predictor's _g2_pace_scale. Preferred: ratio along the
+  // bucket's simulated-lap curve — the corner's own series when `corner`
+  // is given and the curve carries g2_by_corner, else the corner mean
+  // (anchored at lap_time_typ so target === typical scales by exactly 1).
+  // Fallback: the physics exponent. Clamped either way.
+  g2PaceScale(track, car, condition, lapTimeTypS, targetLapTimeS, corner = null) {
     const paceCfg = this.dto.g2_lap_time_model ?? {};
     const lo = paceCfg.multiplier_clamp?.min ?? 0.4;
     const hi = paceCfg.multiplier_clamp?.max ?? 2.5;
 
     const curve = this.lookupG2PaceCurve(track, car, condition);
     if (curve) {
-      const ref = interpClamped(lapTimeTypS, curve.lap_time_s, curve.g2);
+      const byCorner = curve.g2_by_corner;
+      const series = (corner && byCorner && Array.isArray(byCorner[corner]))
+        ? byCorner[corner] : curve.g2;
+      const ref = interpClamped(lapTimeTypS, curve.lap_time_s, series);
       if (ref > 0) {
-        const scale = interpClamped(targetLapTimeS, curve.lap_time_s, curve.g2) / ref;
+        const scale = interpClamped(targetLapTimeS, curve.lap_time_s, series) / ref;
         return { scale: Math.min(hi, Math.max(lo, scale)), source: 'curve' };
       }
     }
@@ -475,7 +489,8 @@ export function predictCorner(model, {
   const tColdC = coldTireTempC ?? ambientTempC;
   const tStartC = tColdC;
 
-  // Target-lap-time feature: pace sets both time-on-track and tire energy.
+  // Target-lap-time feature: pace sets both time-on-track and tire energy
+  // (the heat multiplier is per corner: the simulated lap loads them differently).
   let g2Scale = 1.0;
   let g2PaceSource = null;
   let lapTimeForClockS = lap.valueSeconds;
@@ -484,7 +499,7 @@ export function predictCorner(model, {
     if (!(targetLapTimeS > 0)) {
       throw new RangeError(`target lap time must be > 0; got ${targetLapTimeS}`);
     }
-    const pace = model.g2PaceScale(track, car, cond, lap.valueSeconds, targetLapTimeS);
+    const pace = model.g2PaceScale(track, car, cond, lap.valueSeconds, targetLapTimeS, corner);
     g2Scale = pace.scale;
     g2PaceSource = pace.source;
     g2Value *= g2Scale;
@@ -541,5 +556,55 @@ export function predictCorner(model, {
     outlapG2,
     outlapSource,
     tAfterOutlapC,
+  };
+}
+
+// ---- Stint trajectory (Preview) ----
+
+// Temperature and gauge pressure of one corner over a stint, from pit
+// exit at the recommended cold pressure: what the gauge would read as
+// the car runs. The temperature follows the same two-stage warm-up as
+// predictCorner (out-lap, then flying laps at the target pace); the
+// pressure follows it by Gay-Lussac from the cold set point, so it
+// reaches the target hot pressure exactly at the end of the target lap
+// and keeps rising past it as the tire keeps warming.
+//
+// `horizonLaps` flying laps are covered (default: five times the target
+// lap, at least ten laps); `samplesPerLap` points per lap plus every lap
+// boundary. Returns the underlying prediction, the clock lap time, the
+// time at the end of each lap (index 0 = end of the out-lap), the target
+// lap's time, and the sampled points.
+export function predictCornerTrajectory(model, inputs, { horizonLaps = null, samplesPerLap = 20 } = {}) {
+  const p = predictCorner(model, inputs);
+  const lapS = p.targetLapTimeS ?? p.lapTimeTypS;
+  const laps = horizonLaps ?? Math.max(10, inputs.lapWithinStint * 5);
+  const totalS = p.outlapTimeS + laps * lapS;
+  const pColdAbs = p.coldPressureBar + model.pAtmBar;
+  const tColdK = p.tColdC + T_ZERO_C_TO_K;
+
+  const tempAt = (t) => (t <= p.outlapTimeS
+    ? warmupCurveC(t, p.tEffC, p.kKelvinPerG2, p.outlapG2, p.tauSec, p.tStartC)
+    : warmupCurveC(t - p.outlapTimeS, p.tEffC, p.kKelvinPerG2, p.g2Typ, p.tauSec, p.tAfterOutlapC));
+  const pressureAt = (tempC) => pColdAbs * (tempC + T_ZERO_C_TO_K) / tColdK - model.pAtmBar;
+
+  const lapEndsS = [];
+  for (let k = 0; k <= laps; k++) lapEndsS.push(p.outlapTimeS + k * lapS);
+
+  const times = new Set([0, p.outlapTimeS, ...lapEndsS]);
+  const step = lapS / samplesPerLap;
+  for (let t = 0; t < totalS; t += step) times.add(t);
+  const points = [...times].filter((t) => t <= totalS).sort((a, b) => a - b).map((t) => {
+    const tempC = tempAt(t);
+    return { t, tempC, pressureBar: pressureAt(tempC) };
+  });
+
+  return {
+    prediction: p,
+    lapTimeS: lapS,
+    outlapS: p.outlapTimeS,
+    lapEndsS,
+    targetTimeS: p.outlapTimeS + inputs.lapWithinStint * lapS,
+    totalS,
+    points,
   };
 }
