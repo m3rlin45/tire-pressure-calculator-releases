@@ -3,7 +3,7 @@
 // artifact is network-first so a fresh deploy is picked up when online,
 // falling back to the last-synced copy trackside with no signal.
 //
-// cffab039a870 is stamped with the git SHA by the deploy workflow
+// 8bf30bed17fa is stamped with the git SHA by the deploy workflow
 // (.github/workflows/build-tire-pressure-web.yml); locally it stays as-is,
 // which simply means one long-lived dev cache.
 //
@@ -13,7 +13,7 @@
 // the old one to close — an installed PWA may never close — and the page
 // reloads once when its controller changes (app.js). Offline is never
 // interrupted: the old cache is only deleted after the new one is full.
-const CACHE = 'tire-pressure-calculator-cffab039a870';
+const CACHE = 'tire-pressure-calculator-8bf30bed17fa';
 
 const SHELL = [
   './',
